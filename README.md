@@ -1,1 +1,2 @@
-# vidflix
+# vidley
+Video search service.

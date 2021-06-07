@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+<header>
+    <div class="container">
+        <p>Hello
+        <p sec:authentication="name"/> </p>
+    </div>
+</header>
+<main>
+    <section layout:fragment="content">
+        <div class="container">
+            <div class="jumbotron mt-3">
+                <h1>Hello World in Dashboard!</h1>
+                <p class="lead">Here will be placed content info about app.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>
+
+
+

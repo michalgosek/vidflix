@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bustracker app</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" crossorigin="anonymous">
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script th:src="@{/js/jquery-3.4.1.slim.min.js}" crossorigin="anonymous"></script>
+    <script th:src="@{/js/popper.min.js}" crossorigin="anonymous"></script>
+    <script th:src="@{/js/bootstrap.min.js}" crossorigin="anonymous"></script>
+</head>
+<body>
+<!--    <header th:insert="~{fragments/header :: carousel-header}"/>-->
+<nav th:insert="~{fragments/navigation :: navigation-bottom-black}"/>
+<main>
+    <section layout:fragment="content"/>
+</main>
+<footer>
+
+</footer>
+</body>
+</html>
+
+
