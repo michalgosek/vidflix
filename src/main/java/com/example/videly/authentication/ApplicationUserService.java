@@ -13,7 +13,7 @@ public class ApplicationUserService implements UserDetailsService {
     private final ApplicationUserDAO dao;
 
     @Autowired
-    public ApplicationUserService(@Qualifier("dummy") ApplicationUserDAO dao) {
+    public ApplicationUserService(@Qualifier("MySQL") ApplicationUserDAO dao) {
         this.dao = dao;
     }
 
