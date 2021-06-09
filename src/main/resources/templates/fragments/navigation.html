@@ -1,8 +1,7 @@
 <!doctype html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
->
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <nav th:fragment="navigation-bottom-black" class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
     <a class="navbar-brand" href="/">Navbar</a>
@@ -14,6 +13,9 @@
         <ul class="navbar-nav mr-auto">
             <li sec:authorize="!isAuthenticated()" class="nav-item">
                 <a class="nav-link" th:href="@{/login}">Login</a>
+            </li>
+            <li sec:authorize="!isAuthenticated()" class="nav-item">
+                <a class="nav-link" th:href="@{/registration}">Register</a>
             </li>
             <li sec:authorize="isAuthenticated()" class="nav-item">
                 <a class="nav-link" th:href="@{/logout}">Logout</a>

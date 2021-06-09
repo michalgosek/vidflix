@@ -18,7 +18,22 @@ public class ApplicationUserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return dao.loadUserByUsername(s).orElseThrow(() -> new UsernameNotFoundException(String.format("%s not found.%n", s)));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        final String USER_NOT_FOUND_MSG = "Username %s not found in users table";
+        final String ERR_MSG = String.format(USER_NOT_FOUND_MSG, username);
+        return dao.loadUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException(ERR_MSG));
+    }
+
+    public void RegisterUser(ApplicationUser applicationUser) {
+        final boolean isPresent = dao.findByEmail(applicationUser.getEmail()).isPresent();
+
+        if (isPresent) {
+            final String USER_NOT_FOUND_MSG = "User with %s email was found in users table";
+            throw new IllegalStateException(String.format(USER_NOT_FOUND_MSG, applicationUser.getEmail()));
+        }
+
+        // todo to status code fix !
+        final int insertSucceedStatus = dao.insertUser(applicationUser);
+        System.out.println(insertSucceedStatus);
     }
 }

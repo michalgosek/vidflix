@@ -1,6 +1,7 @@
 package com.example.videly.authentication;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -10,9 +11,9 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
     @Id
-    @SequenceGenerator(name = "users_sequence", sequenceName = "users_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_sequence")
-    @Column(name = "id", updatable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
     @Column(name = "username", nullable = false)
@@ -20,6 +21,9 @@ public class User {
 
     @Column(name = "password", nullable = false)
     private final String password;
+
+    @Column(name = "email", nullable = false)
+    private final String email;
 
     @Column(name = "is_account_non_expired", nullable = false)
     private final boolean isAccountNonExpired;
@@ -41,10 +45,12 @@ public class User {
     public User(Long id,
                 String username,
                 String password,
+                String email,
                 boolean isAccountNonExpired,
                 boolean isAccountNonLocked,
                 boolean isCredentialsNonExpired,
                 boolean isEnabled) {
+        this.email = email;
         this.id = id;
         this.username = username;
         this.password = password;
@@ -52,5 +58,41 @@ public class User {
         this.isAccountNonLocked = isAccountNonLocked;
         this.isCredentialsNonExpired = isCredentialsNonExpired;
         this.isEnabled = isEnabled;
+    }
+
+    public User(String username,
+                String password,
+                String email,
+                boolean isAccountNonExpired,
+                boolean isAccountNonLocked,
+                boolean isCredentialsNonExpired,
+                boolean isEnabled,
+                Set<Role> roles) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.isAccountNonExpired = isAccountNonExpired;
+        this.isAccountNonLocked = isAccountNonLocked;
+        this.isCredentialsNonExpired = isCredentialsNonExpired;
+        this.isEnabled = isEnabled;
+        this.roles = roles;
+    }
+
+    public User(String username,
+                String password,
+                String email,
+                boolean isAccountNonExpired,
+                boolean isAccountNonLocked,
+                boolean isCredentialsNonExpired,
+                boolean isEnabled) {
+        this(
+                username,
+                password,
+                email,
+                isAccountNonExpired,
+                isAccountNonLocked,
+                isCredentialsNonExpired,
+                isEnabled,
+                null);
     }
 }

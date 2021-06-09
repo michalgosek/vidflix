@@ -17,9 +17,7 @@ public class ApplicationUser implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return user.getPassword();
-    }
+    public String getPassword() { return user.getPassword(); }
 
     @Override
     public String getUsername() {
@@ -44,5 +42,9 @@ public class ApplicationUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return user.isEnabled();
+    }
+
+    public String getEmail() {
+        return user.getEmail();
     }
 }
