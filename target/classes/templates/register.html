@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Videly - Registration Page</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <div class="row align-items-center my-2">
+            <div class="col-12">
+                <div class="jumbotron mt-5">
+                    <div th:object="${error}" th:if="${error != null}"
+                         class="alert alert-warning alert-dismissible fade show"
+                         role="alert">
+                        <strong>Hey!</strong>
+                        <p th:text="${error}"></p>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div th:object="${success}" th:if="${success != null}"
+                         class="alert alert-success alert-dismissible fade show"
+                         role="alert">
+                        <strong>Hey!</strong>
+                        <p th:text="${success}"></p>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <form class="row g-3" th:action="@{/api/v1/registration}" th:object="${accountData}"
+                          method="post">
+                        <div class="col-md-4">
+                            <label for="validationServerUsername" class="form-label">Username</label>
+                            <div class="input-group has-validation">
+                                <input type="text" th:field="*{username}" class="form-control is-invalid"
+                                       id="validationServerUsername"
+                                       aria-describedby="validationServerUsernameFeedback" required>
+                                <div id="validationServerUsernameFeedback" class="invalid-feedback">
+                                    Please choose a username.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="validationServerPassword" class="form-label">Password</label>
+                            <div class="input-group has-validation">
+                                <input type="password" th:field="*{password}" class="form-control is-invalid"
+                                       id="validationServerPassword"
+                                       aria-describedby="validationServerPasswordFeedback" required>
+                                <div id="validationServerPasswordFeedback" class="invalid-feedback">
+                                    Please choose a username.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="validationServerEmail" class="form-label">Email</label>
+                            <div class="input-group has-validation">
+                                <input type="email" th:field="*{email}" class="form-control is-invalid"
+                                       id="validationServerEmail"
+                                       aria-describedby="validationServerEmailFeedback" required>
+                                <div id="validationServerEmailFeedback" class="invalid-feedback">
+                                    Please choose an email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button class="btn btn-primary" type="submit">Submit form</button>
+                            <button class="btn btn-secondary" type="reset">Clear form</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

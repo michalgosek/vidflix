@@ -29,10 +29,23 @@ public class DataAccessService implements ApplicationUserDAO {
                 .findFirst();
     }
 
+    @Override
+    public int insertUser(ApplicationUser applicationUser) {
+        return 0;
+    }
+
+    @Override
+    public Optional<ApplicationUser> findByEmail(String email) {
+        return getApplicationUsers()
+                .stream().filter(user -> email.equals(user.getEmail()))
+                .findFirst();
+    }
+
     private List<ApplicationUser> getApplicationUsers() {
         User admin = new User(1L,
                 "admin",
                 passwordEncoder.encode("pass"),
+                "admin@spring.com",
                 true,
                 true,
                 true,
