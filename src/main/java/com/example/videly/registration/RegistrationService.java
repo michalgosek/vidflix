@@ -19,7 +19,7 @@ public class RegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final PasswordValidator passwordValidator;
 
-    public String Register(RegistrationForm registrationForm) {
+    public void Register(RegistrationForm registrationForm) {
         final boolean isValidEmail = emailValidator.test(registrationForm.getEmail());
         if (!isValidEmail) {
             final String EMAIL_NOT_VALID_MSG = "provided email for %s is not valid";
@@ -46,9 +46,5 @@ public class RegistrationService {
                 Collections.singleton(new SimpleGrantedAuthority("USER"));
 
         applicationUserService.RegisterUser(new ApplicationUser(user, grantedAuthorities));
-
-        // TODO: confirmation token
-
-        return "";
     }
 }

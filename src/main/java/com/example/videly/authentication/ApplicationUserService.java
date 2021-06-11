@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ApplicationUserService implements UserDetailsService {
     private final ApplicationUserDAO dao;
@@ -25,15 +27,21 @@ public class ApplicationUserService implements UserDetailsService {
     }
 
     public void RegisterUser(ApplicationUser applicationUser) {
-        final boolean isPresent = dao.findByEmail(applicationUser.getEmail()).isPresent();
+        Optional<ApplicationUser> user = dao.findByEmail(applicationUser.getEmail());
+        user.ifPresentOrElse(foundUser -> {
+            final boolean userWithNameExists = foundUser.getUsername().equals(applicationUser.getUsername());
 
-        if (isPresent) {
-            final String USER_NOT_FOUND_MSG = "User with %s email was found in users table";
-            throw new IllegalStateException(String.format(USER_NOT_FOUND_MSG, applicationUser.getEmail()));
-        }
+            if (userWithNameExists) {
+                final String USERNAME_FOUND_MSG = "Choose another username for creating account.";
+                throw new IllegalStateException(USERNAME_FOUND_MSG);
+            }
 
-        // todo to status code fix !
-        final int insertSucceedStatus = dao.insertUser(applicationUser);
-        System.out.println(insertSucceedStatus);
+            final String USER_EMAIL_FOUND = "Choose another email was found for creating account.";
+            throw new IllegalStateException(USER_EMAIL_FOUND);
+        }, () -> {
+            final int insertSucceedStatus = dao.insertUser(applicationUser);
+            System.out.printf("Insertion %s user into database users status code %d\n", applicationUser.getUsername(),
+                    insertSucceedStatus);
+        });
     }
 }

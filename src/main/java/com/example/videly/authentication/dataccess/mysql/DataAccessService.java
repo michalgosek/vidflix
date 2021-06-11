@@ -44,7 +44,6 @@ public class DataAccessService implements ApplicationUserDAO {
         return Optional.ofNullable(jdbcTemplate.query(query, mapUserFromDatabase(), username));
     }
 
-
     private List<Long> selectUserRoles(Long id) {
         final String query = "SELECT role_id FROM users_roles WHERE user_id = ?";
         return jdbcTemplate.query(query, mapUserRolesFromDatabase(), id);
@@ -103,7 +102,7 @@ public class DataAccessService implements ApplicationUserDAO {
     @Override
     public int insertUser(ApplicationUser applicationUser) {
         final String query = "INSERT INTO users (email, is_account_non_expired, is_account_non_locked, is_credentials_non_expired, is_enabled, password, username) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(
+        final int userInsertStatus = jdbcTemplate.update(
                 query,
                 applicationUser.getEmail(),
                 applicationUser.isAccountNonExpired(),
@@ -112,6 +111,15 @@ public class DataAccessService implements ApplicationUserDAO {
                 applicationUser.isEnabled(),
                 applicationUser.getPassword(),
                 applicationUser.getUsername());
+
+        Optional<User> user = selectUser(applicationUser.getUsername());
+        if (user.isPresent()) {
+            final String query2 = "INSERT INTO users_roles (user_id, role_id) VALUES (?, ?)";
+            return jdbcTemplate.update(query2, user.get().getId(), "1");
+
+        }
+
+        return userInsertStatus;
     }
 
     @Override

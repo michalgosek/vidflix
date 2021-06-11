@@ -12,6 +12,26 @@
         <div class="row align-items-center my-2">
             <div class="col-12">
                 <div class="jumbotron mt-5">
+                    <div th:object="${error}" th:if="${error != null}"
+                         class="alert alert-warning alert-dismissible fade show"
+                         role="alert">
+                        <strong>Hey!</strong>
+                        <p th:text="${error}"></p>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div th:object="${success}" th:if="${success != null}"
+                         class="alert alert-success alert-dismissible fade show"
+                         role="alert">
+                        <strong>Hey!</strong>
+                        <p th:text="${success}"></p>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
                     <form class="row g-3" th:action="@{/api/v1/registration}" th:object="${accountData}"
                           method="post">
                         <div class="col-md-4">
@@ -52,7 +72,6 @@
                             <button class="btn btn-secondary" type="reset">Clear form</button>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
