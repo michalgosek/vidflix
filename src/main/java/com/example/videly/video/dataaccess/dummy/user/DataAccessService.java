@@ -5,7 +5,6 @@ import com.example.videly.video.Video;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository("dummyUserVideos")
 public class DataAccessService implements UserVideoDAO {
@@ -26,10 +25,9 @@ public class DataAccessService implements UserVideoDAO {
             return;
         }
 
-        List<Video> videos = usersVideos.get(username);
-        if (videos != null) {
+        final List<Video> videos = usersVideos.get(username);
+        if (videos != null)
             videos.add(video);
-        }
     }
 
     @Override
@@ -39,9 +37,10 @@ public class DataAccessService implements UserVideoDAO {
 
     @Override
     public void returnVideo(Long id, String username) {
-        List<Video> userVideos = usersVideos.get(username);
-        usersVideos.replace(username, userVideos
-                .stream()
-                .filter(v -> !v.getId().equals(id)).collect(Collectors.toList()));
+        final List<Video> videos = usersVideos.get(username);
+        Optional<Video> videoToDrop = findVideo(id, username);
+
+        if (videos != null && videoToDrop.isPresent())
+            videos.remove(videoToDrop.get());
     }
 }
