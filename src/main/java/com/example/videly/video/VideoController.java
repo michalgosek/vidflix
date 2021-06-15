@@ -1,7 +1,6 @@
 package com.example.videly.video;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,31 +11,39 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping(path = "/api/v1/videos")
+@RequestMapping("/videos")
 @AllArgsConstructor
 public class VideoController {
     private final VideoService videoService;
 
-    @GetMapping(path = "user/rent/{id}")
-    public String rentVideo(@PathVariable("id") Long id, Model model, Authentication authentication) {
-        final boolean rentVideoSucceed = videoService.rentVideo(authentication.getName(), id);
-        final Optional<List<Video>> videos = videoService.getUserVideos(authentication.getName());
-        videos.ifPresent(videosList -> model.addAttribute("videos", videosList));
-        return rentVideoSucceed ? "account/videos" : "503";
+    @GetMapping()
+    public String getVideosView(Model model) {
+        final Optional<List<Video>> videos = videoService.listAllVideos();
+        videos.ifPresent(videoList -> model.addAttribute("videos", videoList));
+        return "videos/list";
     }
 
-    @GetMapping(path = "user/return/{id}")
-    public String videoReturn(@PathVariable("id") Long id, Model model, Authentication authentication) {
-        final boolean returnVideoSucceed = videoService.returnVideo(id, authentication.getName());
-        final Optional<List<Video>> videos = videoService.getUserVideos(authentication.getName());
-        videos.ifPresent(videosList -> model.addAttribute("videos", videosList));
-        return returnVideoSucceed ? "account/videos" : "503";
+    @GetMapping(path = "categories")
+    public String getCategoriesView(Model model) {
+        final Optional<List<VideoCategory>> categories = videoService.getVideosCategories();
+        categories.ifPresent(c -> model.addAttribute("categories", c));
+        return "videos/categories";
     }
 
-    @GetMapping(path = "user")
-    public String getUserVideos(Model model, Authentication authentication) {
-        final Optional<List<Video>> videos = videoService.getUserVideos(authentication.getName());
-        videos.ifPresent(videosList -> model.addAttribute("videos", videosList));
-        return "account/videos";
+    @GetMapping(path = "categories/{id}")
+    public String getVideoByCategory(@PathVariable("id") Long id, Model model) {
+        final Optional<List<Video>> videos = videoService.listVideosByCategory(id);
+        videos.ifPresent(v -> model.addAttribute("videos", v));
+        return "videos/video_category";
+    }
+
+    @GetMapping(path = "{id}")
+    public String getVideoView(@PathVariable("id") Long id, Model model) {
+        Optional<Video> video = videoService.findVideo(id);
+        video.ifPresent(v -> {
+            model.addAttribute("video", v);
+            model.addAttribute("categories", v.getCategories());
+        });
+        return "videos/video";
     }
 }

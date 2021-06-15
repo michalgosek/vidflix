@@ -5,20 +5,33 @@ import com.example.videly.dao.UserVideoDAO;
 import com.example.videly.dao.VideoCategoryDAO;
 import com.example.videly.dao.VideoDAO;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class VideoService {
     private final VideoDAO videoDAO;
     private final UserVideoDAO userVideoDAO;
     private final VideoCategoryDAO videoCategoryDAO;
     private final ApplicationUserService applicationUserService;
 
-    public List<Video> listAllVideos() {
+    @Autowired
+    public VideoService(@Qualifier("MySQLVideosRepository") VideoDAO videoDAO,
+                        @Qualifier("MySQLUserVideosRepository") UserVideoDAO userVideoDAO,
+                        @Qualifier("MySQLCategoriesRepository") VideoCategoryDAO videoCategoryDAO,
+                        ApplicationUserService applicationUserService) {
+        this.videoDAO = videoDAO;
+        this.userVideoDAO = userVideoDAO;
+        this.videoCategoryDAO = videoCategoryDAO;
+        this.applicationUserService = applicationUserService;
+    }
+
+
+    public Optional<List<Video>> listAllVideos() {
         return videoDAO.listAllVideos();
     }
 

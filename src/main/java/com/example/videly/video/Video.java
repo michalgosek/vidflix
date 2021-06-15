@@ -39,6 +39,11 @@ public class Video {
     )
     private Set<VideoCategory> categories;
 
+    public Video(Long id) {
+        this.id = id;
+        this.categories = new HashSet<>();
+    }
+
     public Video(Long id,
                  String name,
                  String shortDescription,

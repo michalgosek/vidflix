@@ -68,34 +68,43 @@ public class DataAccessService implements VideoDAO {
 
     @Override
     public Optional<Video> findVideo(String name) {
-        return listAllVideos()
+        return videos
+                .values()
                 .stream()
-                .filter(video -> name.equals(video.getName()))
+                .filter(v -> v.getName().equals(name))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<Video> findVideo(Long id) {
+        return videos
+                .values()
+                .stream()
+                .filter(key -> key.getId().equals(id))
                 .findFirst();
     }
 
     @Override
     public Optional<List<Video>> findVideosFromCategory(Long id) {
-        List<Video> videos = listAllVideos();
         List<Video> filtered = new ArrayList<>();
-        videos.forEach(v -> v.getCategories().forEach(c -> {
-            if (c.getId().equals(id))
-                filtered.add(v);
-        }));
+        listAllVideos()
+                .ifPresent(videoKey -> videoKey
+                        .forEach(video -> video
+                                .getCategories()
+                                .forEach(category -> {
+                                            if (id.equals(category.getId()))
+                                                filtered.add(video);
+                                        }
+                                )
+                        )
+                );
 
         return Optional.of(filtered);
     }
 
     @Override
-    public List<Video> listAllVideos() {
-        return new ArrayList<>(videos.values());
-    }
-
-    @Override
-    public Optional<Video> findVideo(Long id) {
-        return listAllVideos()
-                .stream()
-                .filter(video -> id.equals(video.getId())).findFirst();
+    public Optional<List<Video>> listAllVideos() {
+        return Optional.of(new ArrayList<>(videos.values()));
     }
 
     @Override

@@ -14,5 +14,5 @@ public interface VideoDAO {
 
     void setQuantity(Long id, int value);
 
-    List<Video> listAllVideos();
+    Optional<List<Video>> listAllVideos();
 }
