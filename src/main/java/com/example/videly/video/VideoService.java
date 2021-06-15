@@ -22,42 +22,38 @@ public class VideoService {
 
     public boolean returnVideo(Long id, String username) {
         final boolean isUserActive = applicationUserService.verifyUserAccountState(username);
-        boolean returnSucceeds = false;
-        if (isUserActive) {
-            Optional<Video> videoToReturn = videoDAO.findVideoById(id);
+        final Optional<Video> rentedVideo = userVideoDAO.findVideo(id, username);
+        final Optional<Video> videoFromShop = videoDAO.findVideo(id);
+        final boolean canReturn = isUserActive && videoFromShop.isPresent() && rentedVideo.isPresent();
 
-            if (videoToReturn.isPresent()) {
-                Optional<Video> userVideo = userVideoDAO.findVideo(id, username);
-                if (userVideo.isPresent()) {
-                    userVideoDAO.returnVideo(id, username);
-                    videoDAO.setQuantity(id, videoToReturn.get().getQuantity() + 1);
-                    returnSucceeds = true;
-                }
-            }
+        if (canReturn) {
+            userVideoDAO.returnVideo(id, username);
+            videoDAO.setQuantity(id, videoFromShop.get().getQuantity() + 1);
+            return true;
         }
 
-        return returnSucceeds;
+        return false;
     }
 
     public boolean rentVideo(String username, Long id) {
         final boolean isUserActive = applicationUserService.verifyUserAccountState(username);
-        boolean insertSucceeds = false;
-        if (isUserActive) {
-            Optional<Video> video = videoDAO.findVideoById(id);
-            if (video.isPresent() && video.get().getQuantity() > 0) {
-                userVideoDAO.insertVideo(video.get(), username);
-                videoDAO.setQuantity(id, video.get().getQuantity() - 1);
-                insertSucceeds = true;
-            }
+        final Optional<Video> videoToRent = videoDAO.findVideo(id);
+
+        final boolean canRent = isUserActive && videoToRent.isPresent() && videoToRent.get().getQuantity() > 0;
+        if (canRent) {
+            userVideoDAO.insertVideo(videoToRent.get(), username);
+            videoDAO.setQuantity(id, videoToRent.get().getQuantity() - 1);
+            return true;
         }
-        return insertSucceeds;
+
+        return false;
     }
 
-    public List<Video> getUserVideos(String username) {
+    public Optional<List<Video>> getUserVideos(String username) {
         return userVideoDAO.listVideos(username);
     }
 
     public Optional<Video> findVideo(Long id) {
-        return videoDAO.findVideoById(id);
+        return videoDAO.findVideo(id);
     }
 }

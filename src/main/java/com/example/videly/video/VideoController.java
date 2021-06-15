@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping(path = "/api/v1/videos")
 @AllArgsConstructor
@@ -17,21 +21,23 @@ public class VideoController {
     @GetMapping(path = "user/rent/{id}")
     public String rentVideo(@PathVariable("id") Long id, Model model, Authentication authentication) {
         final boolean rentVideoSucceed = videoService.rentVideo(authentication.getName(), id);
-        model.addAttribute("videos", videoService.getUserVideos(authentication.getName()));
+        final Optional<List<Video>> videos = videoService.getUserVideos(authentication.getName());
+        videos.ifPresent(videosList -> model.addAttribute("videos", videosList));
         return rentVideoSucceed ? "account/videos" : "503";
     }
 
     @GetMapping(path = "user/return/{id}")
     public String videoReturn(@PathVariable("id") Long id, Model model, Authentication authentication) {
         final boolean returnVideoSucceed = videoService.returnVideo(id, authentication.getName());
-        var videos = videoService.getUserVideos(authentication.getName());
-        model.addAttribute("videos",videos );
+        final Optional<List<Video>> videos = videoService.getUserVideos(authentication.getName());
+        videos.ifPresent(videosList -> model.addAttribute("videos", videosList));
         return returnVideoSucceed ? "account/videos" : "503";
     }
 
     @GetMapping(path = "user")
     public String getUserVideos(Model model, Authentication authentication) {
-        model.addAttribute("videos", videoService.getUserVideos(authentication.getName()));
+        final Optional<List<Video>> videos = videoService.getUserVideos(authentication.getName());
+        videos.ifPresent(videosList -> model.addAttribute("videos", videosList));
         return "account/videos";
     }
 }

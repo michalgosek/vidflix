@@ -11,23 +11,18 @@ public class DataAccessService implements UserVideoDAO {
     private final Map<String, List<Video>> usersVideos = new HashMap<>();
 
     @Override
-    public List<Video> listVideos(String username) {
-        return usersVideos.get(username);
+    public Optional<List<Video>> listVideos(String username) {
+        return Optional.ofNullable(usersVideos.get(username));
     }
 
     @Override
     public void insertVideo(Video video, String username) {
-        final boolean isUserKeyExists = usersVideos.containsKey(username);
-        if (!isUserKeyExists) {
-            List<Video> videos = new ArrayList<>();
-            videos.add(video);
-            usersVideos.put(username, videos);
-            return;
-        }
-
-        final List<Video> videos = usersVideos.get(username);
-        if (videos != null)
-            videos.add(video);
+        Optional<List<Video>> userVideos = Optional.ofNullable(usersVideos.get(username));
+        userVideos.ifPresentOrElse(videosList -> videosList.add(video),
+                () -> {
+                    usersVideos.put(username, new ArrayList<>());
+                    usersVideos.get(username).add(video);
+                });
     }
 
     @Override
@@ -37,10 +32,8 @@ public class DataAccessService implements UserVideoDAO {
 
     @Override
     public void returnVideo(Long id, String username) {
-        final List<Video> videos = usersVideos.get(username);
-        Optional<Video> videoToDrop = findVideo(id, username);
-
-        if (videos != null && videoToDrop.isPresent())
-            videos.remove(videoToDrop.get());
+        final Optional<List<Video>> userVideos = Optional.ofNullable(usersVideos.get(username));
+        final Optional<Video> videoToDrop = findVideo(id, username);
+        videoToDrop.ifPresent(video -> userVideos.ifPresent(userVideosList -> userVideosList.remove(video)));
     }
 }

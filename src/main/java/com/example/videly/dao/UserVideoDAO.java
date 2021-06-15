@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserVideoDAO {
-    List<Video> listVideos(String username);
+    Optional<List<Video>> listVideos(String username);
 
     Optional<Video> findVideo(Long id, String username);
 
