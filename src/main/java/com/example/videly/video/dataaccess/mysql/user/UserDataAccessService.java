@@ -19,38 +19,49 @@ public class UserDataAccessService implements UserVideoDAO {
     @Override
     public Optional<List<Video>> listVideos(String username) {
         final Long userId = findUserId(username);
-        final String query = "SELECT * FROM user_videos WHERE user_id = ?";
+        final String query = "SELECT * FROM users_videos WHERE user_id = ?";
         return Optional.of(new ArrayList<>(jdbcTemplate.query(query, mapVideoFromDatabase(), userId)));
     }
 
     @Override
     public Optional<Video> findVideo(Long videoId, String username) {
         final Long userId = findUserId(username);
-        final String query = "SELECT * FROM user_videos WHERE user_id = ? AND video_id = ?";
+        final String query = "SELECT * FROM users_videos WHERE user_id = ? AND video_id = ?";
         return jdbcTemplate.query(query, mapVideoFromDatabase(), userId, videoId).stream().findFirst();
     }
 
     @Override
     public void returnVideo(Long videoId, String username) {
+        int quantity = getQuantityColumnValue(videoId);
         final Long userId = findUserId(username);
-        final String query = "DELETE FROM user_videos WHERE user_id = ?, video_id = ?";
-        jdbcTemplate.update(query, userId, videoId);
+        jdbcTemplate.update("DELETE FROM users_videos WHERE user_id = ? AND video_id = ?", userId, videoId);
+        jdbcTemplate.update("UPDATE videos SET quantity = ? WHERE id = ?", quantity + 1, videoId);
     }
 
     @Override
     public void insertVideo(Video video, String username) {
-        final Long userId = findUserId(username);
-        final String query = "INSERT INTO user_videos (user_id, video_id) VALUES (?, ?)";
-        jdbcTemplate.update(query, userId, video.getId());
+        int quantity = getQuantityColumnValue(video.getId());
+        jdbcTemplate.update("INSERT INTO users_videos (user_id, video_id) VALUES (?, ?)", findUserId(username), video.getId());
+        jdbcTemplate.update("UPDATE videos SET quantity = ? WHERE id = ?", quantity - 1, video.getId());
     }
+
+    private Integer getQuantityColumnValue(Long id) {
+        final String query2 = "SELECT quantity FROM videos WHERE id = ?";
+        return jdbcTemplate.query(query2, mapQuantityColumn(), id).stream().findFirst().orElse(-1);
+    }
+
 
     private Long findUserId(String username) {
         final String query = "SELECT id FROM users WHERE username = ?";
-        return jdbcTemplate.query(query, mapUserIdFromDatabase(), username).stream().findFirst().orElse(-1L);
+        return jdbcTemplate.query(query, mapIdColumn(), username).stream().findFirst().orElse(-1L);
     }
 
-    private RowMapper<Long> mapUserIdFromDatabase() {
-        return (rs, rowNum) -> rs.getLong("user_id");
+    private RowMapper<Integer> mapQuantityColumn() {
+        return (rs, rowNum) -> rs.getInt("quantity");
+    }
+
+    private RowMapper<Long> mapIdColumn() {
+        return (rs, rowNum) -> rs.getLong("id");
     }
 
     private RowMapper<Video> mapVideoFromDatabase() {
