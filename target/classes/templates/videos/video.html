@@ -19,7 +19,8 @@
                         <p class="h5">Video description: </p>
                         <p class="card-text lead" th:text="${video.getFullDescription()}"></p>
                         <a th:href="@{'/videos/'}" class="card-link">Back to videos</a>
-                        <a th:href="@{'/api/v1/videos/' + ${video.getId()}}" class="card-link">Checkout</a>
+                        <a th:if="${video.getQuantity() > 0}" class="card-link"
+                           th:href="@{'/api/v1/videos/user/rent/' + ${video.getId()}}">Checkout</a>
                     </div>
                 </div>
             </div>

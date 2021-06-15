@@ -10,7 +10,7 @@ public interface VideoDAO {
 
     Optional<Video> findVideoById(Long Id);
 
-    boolean updateVideoQuantity(Long Id);
+    void setQuantity(Long id, int value);
 
     List<Video> listAllVideos();
 }

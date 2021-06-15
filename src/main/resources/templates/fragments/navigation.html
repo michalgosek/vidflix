@@ -14,11 +14,17 @@
             <li sec:authorize="!isAuthenticated()" class="nav-item">
                 <a class="nav-link" th:href="@{/login}">Login</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/videos}">Videos</a>
+            </li>
             <li sec:authorize="!isAuthenticated()" class="nav-item">
                 <a class="nav-link" th:href="@{/registration}">Register</a>
             </li>
             <li sec:authorize="isAuthenticated()" class="nav-item">
                 <a class="nav-link" th:href="@{/logout}">Logout</a>
+            </li>
+            <li sec:authorize="isAuthenticated()" class="nav-item">
+                <a class="nav-link" th:href="@{/api/v1/videos/user}">Videos List</a>
             </li>
         </ul>
     </div>

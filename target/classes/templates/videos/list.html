@@ -17,7 +17,8 @@
                         <h6 class="card-subtitle mb-2 text-muted" th:text="${video.getShortDescription()}"></h6>
                         <p class="card-text">To get more details click Read more.</p>
                         <a th:href="@{'/videos/' + ${video.getId()}}" class="card-link">Read more</a>
-                        <a href="#" class="card-link">Checkout</a>
+                        <a th:if="${video.getQuantity() > 0}" class="card-link"
+                           th:href="@{'/api/v1/videos/user/rent/' + ${video.getId()}}">Checkout</a>
                     </div>
                 </div>
 

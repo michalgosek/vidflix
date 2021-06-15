@@ -1,4 +1,4 @@
-package com.example.videly.video.dataaccess.dummy;
+package com.example.videly.video.dataaccess.dummy.videos;
 
 import com.example.videly.dao.VideoDAO;
 import com.example.videly.video.Video;
@@ -56,7 +56,6 @@ public class DataAccessService implements VideoDAO {
         return getServiceVideos();
     }
 
-
     @Override
     public Optional<Video> findVideoById(Long Id) {
         return getServiceVideos()
@@ -65,19 +64,9 @@ public class DataAccessService implements VideoDAO {
     }
 
     @Override
-    public boolean updateVideoQuantity(Long Id) {
+    public void setQuantity(Long Id, int value) {
         Optional<Video> video = findVideoById(Id);
-
-        if (video.isPresent()) {
-            final int quantity = video.get().getQuantity();
-
-            if (quantity > 0) {
-                video.get().setQuantity(quantity - 1);
-                return true;
-            }
-        }
-
-        return false;
+        video.ifPresent(v -> v.setQuantity(value));
     }
 
     private List<Video> getServiceVideos() {

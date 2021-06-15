@@ -39,7 +39,7 @@ public class ApplicationMainController {
 
     @GetMapping(path = "/videos/{id}")
     public String getVideoView(@PathVariable("id") Long id, Model model) {
-        Optional<Video> video = videoService.findVideoById(id);
+        Optional<Video> video = videoService.findVideo(id);
         video.ifPresentOrElse(v -> model.addAttribute("video", v), () -> System.out.println("vide with not found"));
         return "videos/video";
     }
