@@ -2,6 +2,7 @@ package com.example.videly.video;
 
 import com.example.videly.authentication.ApplicationUserService;
 import com.example.videly.dao.UserVideoDAO;
+import com.example.videly.dao.VideoCategoryDAO;
 import com.example.videly.dao.VideoDAO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,19 @@ import java.util.Optional;
 public class VideoService {
     private final VideoDAO videoDAO;
     private final UserVideoDAO userVideoDAO;
+    private final VideoCategoryDAO videoCategoryDAO;
     private final ApplicationUserService applicationUserService;
 
     public List<Video> listAllVideos() {
         return videoDAO.listAllVideos();
+    }
+
+    public Optional<List<VideoCategory>> getVideosCategories() {
+        return videoCategoryDAO.listAllCategories();
+    }
+
+    public Optional<List<Video>> listVideosByCategory(Long id) {
+        return videoDAO.findVideosFromCategory(id);
     }
 
     public boolean returnVideo(Long id, String username) {

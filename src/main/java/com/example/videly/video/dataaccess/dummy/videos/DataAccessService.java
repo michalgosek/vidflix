@@ -1,25 +1,31 @@
 package com.example.videly.video.dataaccess.dummy.videos;
 
+import com.example.videly.dao.VideoCategoryDAO;
 import com.example.videly.dao.VideoDAO;
 import com.example.videly.video.Video;
+import com.example.videly.video.VideoCategory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository("dummyVideosRepository")
 public class DataAccessService implements VideoDAO {
-    private final ConcurrentHashMap<String, Video> videos;
+    private final ConcurrentHashMap<String, Video> videos = new ConcurrentHashMap<>();
+    private final Map<String, VideoCategory> hash = new HashMap<>();
 
-    public DataAccessService() {
-        this.videos = new ConcurrentHashMap<>();
-        initializeHashMap();
-    }
+    @Autowired
+    public DataAccessService(@Qualifier("dummyCategoriesRepository") VideoCategoryDAO videoCategoryDAO) {
+        Optional<List<VideoCategory>> categories = videoCategoryDAO.listAllCategories();
+        categories.ifPresent(categoryList -> categoryList.forEach(c -> hash.put(c.getName(), c)));
 
-    private void initializeHashMap() {
-        this.videos.put("Video1", new Video(
+        final VideoCategory horror = hash.get("HORROR");
+        final VideoCategory comedy = hash.get("COMEDY");
+        final VideoCategory drama = hash.get("DRAMA");
+
+        final Video v1 = new Video(
                 1L,
                 "Video1",
                 "This is example description...",
@@ -34,8 +40,10 @@ public class DataAccessService implements VideoDAO {
                         versions of Lorem Ipsum.
                         """,
                 1
-        ));
-        this.videos.put("Video2", new Video(
+        );
+        v1.setCategories(Set.of(horror, comedy));
+
+        final Video v2 = new Video(
                 2L,
                 "Video2",
                 "This is example description2...",
@@ -50,36 +58,49 @@ public class DataAccessService implements VideoDAO {
                         versions of Lorem Ipsum.
                         """,
                 1
-        ));
+        );
+
+
+        v2.setCategories(Set.of(drama, comedy));
+        videos.put("Video1", v1);
+        videos.put("Video2", v2);
     }
 
     @Override
     public Optional<Video> findVideo(String name) {
-        return getServiceVideos()
+        return listAllVideos()
                 .stream()
                 .filter(video -> name.equals(video.getName()))
                 .findFirst();
     }
 
     @Override
+    public Optional<List<Video>> findVideosFromCategory(Long id) {
+        List<Video> videos = listAllVideos();
+        List<Video> filtered = new ArrayList<>();
+        videos.forEach(v -> v.getCategories().forEach(c -> {
+            if (c.getId().equals(id))
+                filtered.add(v);
+        }));
+
+        return Optional.of(filtered);
+    }
+
+    @Override
     public List<Video> listAllVideos() {
-        return getServiceVideos();
-    }
-
-    @Override
-    public Optional<Video> findVideo(Long Id) {
-        return getServiceVideos()
-                .stream()
-                .filter(video -> Id.equals(video.getId())).findFirst();
-    }
-
-    @Override
-    public void setQuantity(Long Id, int value) {
-        Optional<Video> video = findVideo(Id);
-        video.ifPresent(v -> v.setQuantity(value));
-    }
-
-    private List<Video> getServiceVideos() {
         return new ArrayList<>(videos.values());
+    }
+
+    @Override
+    public Optional<Video> findVideo(Long id) {
+        return listAllVideos()
+                .stream()
+                .filter(video -> id.equals(video.getId())).findFirst();
+    }
+
+    @Override
+    public void setQuantity(Long id, int value) {
+        Optional<Video> video = findVideo(id);
+        video.ifPresent(v -> v.setQuantity(value));
     }
 }

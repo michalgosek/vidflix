@@ -7,7 +7,8 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Data
-@Entity(name = "video_category")
+@Entity
+@Table(name = "categories")
 public class VideoCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "naive")
@@ -18,8 +19,11 @@ public class VideoCategory {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany
-    @JoinTable(name = "video_categories", joinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "video_id", referencedColumnName = "id"))
-    private Set<Video> categories;
+    @ManyToMany(mappedBy = "categories")
+    private Set<Video> videos;
+
+    public VideoCategory(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

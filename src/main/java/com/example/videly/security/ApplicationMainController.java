@@ -2,6 +2,7 @@ package com.example.videly.security;
 
 import com.example.videly.registration.RegistrationForm;
 import com.example.videly.video.Video;
+import com.example.videly.video.VideoCategory;
 import com.example.videly.video.VideoService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -37,10 +38,27 @@ public class ApplicationMainController {
         return "videos/list";
     }
 
+    @GetMapping(path = "/videos/categories")
+    public String getCategoriesView(Model model) {
+        final Optional<List<VideoCategory>> categories = videoService.getVideosCategories();
+        categories.ifPresent(c -> model.addAttribute("categories", c));
+        return "videos/categories";
+    }
+
+    @GetMapping(path = "/videos/categories/{id}")
+    public String getVideoByCategory(@PathVariable("id") Long id, Model model) {
+        final Optional<List<Video>> videos = videoService.listVideosByCategory(id);
+        videos.ifPresent(v -> model.addAttribute("videos", v));
+        return "videos/video_category";
+    }
+
     @GetMapping(path = "/videos/{id}")
     public String getVideoView(@PathVariable("id") Long id, Model model) {
         Optional<Video> video = videoService.findVideo(id);
-        video.ifPresentOrElse(v -> model.addAttribute("video", v), () -> System.out.println("vide with not found"));
+        video.ifPresent(v -> {
+            model.addAttribute("video", v);
+            model.addAttribute("categories", v.getCategories());
+        });
         return "videos/video";
     }
 

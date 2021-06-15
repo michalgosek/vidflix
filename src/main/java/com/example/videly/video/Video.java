@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -32,7 +33,10 @@ public class Video {
     @ManyToMany(mappedBy = "videos")
     private Set<User> users;
 
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany
+    @JoinTable(name = "videos_categories", joinColumns = @JoinColumn(name = "video_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id")
+    )
     private Set<VideoCategory> categories;
 
     public Video(Long id,
@@ -45,15 +49,6 @@ public class Video {
         this.shortDescription = shortDescription;
         this.fullDescription = fullDescription;
         this.quantity = quantity;
-    }
-
-    public Video(Long id, String name, String shortDescription, String fullDescription, Integer quantity, Set<VideoCategory> categories) {
-        this(id, name, shortDescription, fullDescription, quantity);
-        this.categories = categories;
-    }
-
-    public Video(Long id, String name, String shortDescription, String fullDescription, Integer quantity, VideoCategory category) {
-        this(id, name, shortDescription, fullDescription, quantity);
-        this.categories.add(category);
+        this.categories = new HashSet<>();
     }
 }

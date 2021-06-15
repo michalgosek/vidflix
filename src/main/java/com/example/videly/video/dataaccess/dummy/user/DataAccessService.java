@@ -5,10 +5,15 @@ import com.example.videly.video.Video;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Repository("dummyUserVideos")
 public class DataAccessService implements UserVideoDAO {
-    private final Map<String, List<Video>> usersVideos = new HashMap<>();
+    private final ConcurrentHashMap<String, List<Video>> usersVideos;
+
+    public DataAccessService() {
+        this.usersVideos = new ConcurrentHashMap<>();
+    }
 
     @Override
     public Optional<List<Video>> listVideos(String username) {
