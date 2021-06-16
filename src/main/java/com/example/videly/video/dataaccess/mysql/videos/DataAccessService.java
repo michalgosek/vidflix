@@ -264,7 +264,9 @@ public class DataAccessService implements VideoDAO {
             final String name = resultSet.getString("name");
             final String shortDescription = resultSet.getString("short_description");
             final String fullDescription = resultSet.getString("full_description");
-            return new Video(videoId, name, shortDescription, fullDescription, quantity);
+            final String photoUrl = resultSet.getString("photo_url");
+            final Integer yearOfProduction = resultSet.getInt("year");
+            return new Video(videoId, name, shortDescription, fullDescription, quantity, yearOfProduction, photoUrl);
         };
     }
 

@@ -24,11 +24,20 @@ public class Video {
     @Column(name = "short_description", nullable = false)
     private String shortDescription;
 
-    @Column(name = "full_description", nullable = false)
+    @Column(name = "full_description", nullable = false, length = 1000)
     private String fullDescription;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @Column(name = "photo_url", nullable = false)
+    private String photoURL;
+
+    @Column(name = "year", nullable = false)
+    private Integer year;
+
+    @ManyToMany(mappedBy = "videos")
+    private Set<User> users;
 
     @ManyToMany(mappedBy = "videos")
     private Set<User> users;
@@ -48,12 +57,17 @@ public class Video {
                  String name,
                  String shortDescription,
                  String fullDescription,
+                 Integer quantity,
+                 Integer year,
+                 String photoURL) {
                  Integer quantity) {
         this.name = name;
         this.id = id;
         this.shortDescription = shortDescription;
         this.fullDescription = fullDescription;
         this.quantity = quantity;
+        this.photoURL = photoURL;
+        this.year = year;
         this.categories = new HashSet<>();
     }
 }
