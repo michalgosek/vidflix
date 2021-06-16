@@ -39,6 +39,8 @@ public class Video {
     @ManyToMany(mappedBy = "videos")
     private Set<User> users;
 
+    @ManyToMany(mappedBy = "videos")
+    private Set<User> users;
 
     @ManyToMany
     @JoinTable(name = "videos_categories", joinColumns = @JoinColumn(name = "video_id", referencedColumnName = "id"),
@@ -58,6 +60,7 @@ public class Video {
                  Integer quantity,
                  Integer year,
                  String photoURL) {
+                 Integer quantity) {
         this.name = name;
         this.id = id;
         this.shortDescription = shortDescription;
