@@ -39,7 +39,9 @@ public class DataAccessService implements VideoDAO {
                         and more recently with desktop publishing software like Aldus PageMaker including
                         versions of Lorem Ipsum.
                         """,
-                1
+                1,
+                2002,
+                "https://www.a4bd.eu/wp-content/uploads/2019/05/video.png"
         );
         v1.setCategories(Set.of(horror, comedy));
 
@@ -57,7 +59,9 @@ public class DataAccessService implements VideoDAO {
                         and more recently with desktop publishing software like Aldus PageMaker including
                         versions of Lorem Ipsum.
                         """,
-                1
+                1,
+                1993,
+                "https://www.a4bd.eu/wp-content/uploads/2019/05/video.png"
         );
 
 
