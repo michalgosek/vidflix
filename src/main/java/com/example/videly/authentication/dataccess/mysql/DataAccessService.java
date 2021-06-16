@@ -102,7 +102,7 @@ public class DataAccessService implements ApplicationUserDAO {
     @Override
     public int insertUser(ApplicationUser applicationUser) {
         final String query = "INSERT INTO users (email, is_account_non_expired, is_account_non_locked, is_credentials_non_expired, is_enabled, password, username) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        final int userInsertStatus = jdbcTemplate.update(
+        return jdbcTemplate.update(
                 query,
                 applicationUser.getEmail(),
                 applicationUser.isAccountNonExpired(),
@@ -111,21 +111,18 @@ public class DataAccessService implements ApplicationUserDAO {
                 applicationUser.isEnabled(),
                 applicationUser.getPassword(),
                 applicationUser.getUsername());
+    }
 
-        Optional<User> user = selectUser(applicationUser.getUsername());
-        if (user.isPresent()) {
-            final String query2 = "INSERT INTO users_roles (user_id, role_id) VALUES (?, ?)";
-            return jdbcTemplate.update(query2, user.get().getId(), "1");
-
-        }
-
-        return userInsertStatus;
+    @Override
+    public int insertUserRole(ApplicationUser applicationUser, String roleValue) {
+        final String insertQuery = "INSERT INTO users_roles (user_id, role_id) VALUES (?, ?)";
+        final User user = selectUser(applicationUser.getUsername()).orElseThrow();
+        return jdbcTemplate.update(insertQuery, user.getId(), roleValue);
     }
 
     @Override
     public Optional<ApplicationUser> findByEmail(String email) {
         final Optional<User> user = selectUserByEmail(email);
-
         if (user.isEmpty()) {
             final String USER_NOT_FOUND_MSG = "User with %s email not found in users table";
             final String ERR_MSG = String.format(USER_NOT_FOUND_MSG, email);

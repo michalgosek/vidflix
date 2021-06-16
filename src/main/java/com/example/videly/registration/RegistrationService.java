@@ -19,11 +19,11 @@ public class RegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final PasswordValidator passwordValidator;
 
-    public void Register(RegistrationForm registrationForm) {
+    public void createUser(RegistrationForm registrationForm) {
         final boolean isValidEmail = emailValidator.test(registrationForm.getEmail());
         if (!isValidEmail) {
-            final String EMAIL_NOT_VALID_MSG = "provided email for %s is not valid";
-            throw new IllegalStateException(String.format(EMAIL_NOT_VALID_MSG, registrationForm.getEmail()));
+            final String EMAIL_EXISTS_MSG = "provided email already exists";
+            throw new IllegalStateException(EMAIL_EXISTS_MSG);
         }
 
         final boolean isValidPassword = passwordValidator.test(registrationForm.getPassword());
@@ -45,6 +45,6 @@ public class RegistrationService {
         final Set<SimpleGrantedAuthority> grantedAuthorities =
                 Collections.singleton(new SimpleGrantedAuthority("USER"));
 
-        applicationUserService.RegisterUser(new ApplicationUser(user, grantedAuthorities));
+        applicationUserService.createUser(new ApplicationUser(user, grantedAuthorities));
     }
 }

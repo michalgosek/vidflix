@@ -2,6 +2,7 @@ package com.example.videly.authentication;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -14,6 +15,12 @@ public class ApplicationUser implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return grantedAuthorities;
+    }
+
+    public Long getId() { return user.getId(); }
+
+    public boolean hasUserRoleAssigned() {
+        return getAuthorities().contains(new SimpleGrantedAuthority(UserRole.ROLE_USER.name()));
     }
 
     @Override

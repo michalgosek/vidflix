@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Videly - selected</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <ul class="list-group mt-5">
+            <div class="row">
+                <div class="card col-12 mt-2" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${video.getName()}"></h5>
+                        <p class="card-subtitle mb-2 text-muted">Categories assigned: </p>
+                        <tr th:each="category : ${categories}">
+                            <td><span th:text="${category.getName()}"></span></td>
+                        </tr>
+                        <p class="h5">Available quantity: </p>
+                        <h6 class="card-subtitle mb-2 text-muted" th:text="${video.getQuantity()}"></h6>
+                        <p class="h5">Video description: </p>
+                        <p class="card-text lead" th:text="${video.getFullDescription()}"></p>
+                        <a th:href="@{'/videos/'}" class="card-link">Back to videos</a>
+                        <a th:href="@{/videos/categories}" class="card-link">Go to categories</a>
+                        <a th:if="${video.getQuantity() > 0}" class="card-link"
+                           th:href="@{'/api/v1/videos/user/rent/' + ${video.getId()}}">Checkout</a>
+                    </div>
+                </div>
+            </div>
+        </ul>
+    </div>
+</section>
+</body>
+</html>

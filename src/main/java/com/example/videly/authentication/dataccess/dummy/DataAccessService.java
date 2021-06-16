@@ -35,6 +35,11 @@ public class DataAccessService implements ApplicationUserDAO {
     }
 
     @Override
+    public int insertUserRole(ApplicationUser applicationUser, String roleValue) {
+        return 0;
+    }
+
+    @Override
     public Optional<ApplicationUser> findByEmail(String email) {
         return getApplicationUsers()
                 .stream().filter(user -> email.equals(user.getEmail()))
