@@ -18,20 +18,20 @@ public class DataAccessService implements VideoCategoryDAO {
     @Override
     public Optional<List<VideoCategory>> listAllCategories() {
         final String query = "SELECT * FROM categories";
-        return Optional.of(jdbcTemplate.query(query, mapVideoCategoriesFromDatabase()));
-    }
-
-    private RowMapper<VideoCategory> mapVideoCategoriesFromDatabase() {
-        return (resultSet, i) -> {
-            final Long id = resultSet.getLong("id");
-            final String name = resultSet.getString("name");
-            return new VideoCategory(id, name);
-        };
+        return Optional.of(jdbcTemplate.query(query, mapVideoCategories()));
     }
 
     @Override
     public Optional<VideoCategory> findCategory(Long id) {
         final String query = "SELECT * FROM categories where id = ?";
-        return jdbcTemplate.query(query, mapVideoCategoriesFromDatabase(), id).stream().findFirst();
+        return jdbcTemplate.query(query, mapVideoCategories(), id).stream().findFirst();
+    }
+
+    private RowMapper<VideoCategory> mapVideoCategories() {
+        return (resultSet, i) -> {
+            final Long id = resultSet.getLong("id");
+            final String name = resultSet.getString("name");
+            return new VideoCategory(id, name);
+        };
     }
 }

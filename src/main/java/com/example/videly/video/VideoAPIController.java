@@ -19,23 +19,23 @@ public class VideoAPIController {
 
     @GetMapping(path = "user/rent/{id}")
     public String rentVideo(@PathVariable("id") Long id, Model model, Authentication authentication) {
-        final boolean rentVideoSucceed = videoService.rentVideo(authentication.getName(), id);
-        final Optional<List<Video>> videos = videoService.getUserVideos(authentication.getName());
+        final boolean rentVideoSucceed = videoService.rentVideo(authentication, id);
+        final Optional<List<Video>> videos = videoService.getUserVideos(authentication);
         videos.ifPresent(videosList -> model.addAttribute("videos", videosList));
         return rentVideoSucceed ? "account/videos" : "503";
     }
 
     @GetMapping(path = "user/return/{id}")
     public String videoReturn(@PathVariable("id") Long id, Model model, Authentication authentication) {
-        final boolean returnVideoSucceed = videoService.returnVideo(id, authentication.getName());
-        final Optional<List<Video>> videos = videoService.getUserVideos(authentication.getName());
+        final boolean returnVideoSucceed = videoService.returnVideo(id, authentication);
+        final Optional<List<Video>> videos = videoService.getUserVideos(authentication);
         videos.ifPresent(videosList -> model.addAttribute("videos", videosList));
         return returnVideoSucceed ? "account/videos" : "503";
     }
 
     @GetMapping(path = "user")
     public String getUserVideos(Model model, Authentication authentication) {
-        final Optional<List<Video>> videos = videoService.getUserVideos(authentication.getName());
+        final Optional<List<Video>> videos = videoService.getUserVideos(authentication);
         videos.ifPresent(videosList -> model.addAttribute("videos", videosList));
         return "account/videos";
     }

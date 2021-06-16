@@ -66,14 +66,6 @@ public class DataAccessService implements VideoDAO {
         videos.put("Video2", v2);
     }
 
-    @Override
-    public Optional<Video> findVideo(String name) {
-        return videos
-                .values()
-                .stream()
-                .filter(v -> v.getName().equals(name))
-                .findFirst();
-    }
 
     @Override
     public Optional<Video> findVideo(Long id) {
@@ -108,8 +100,28 @@ public class DataAccessService implements VideoDAO {
     }
 
     @Override
+    public Optional<List<Video>> listUserVideos(Long userID) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void addUserVideo(Long videoID, Long userID) {
+
+    }
+
+    @Override
+    public void returnUserVideo(Long videoID, Long userID) {
+
+    }
+
+    @Override
     public void setQuantity(Long id, int value) {
         Optional<Video> video = findVideo(id);
         video.ifPresent(v -> v.setQuantity(value));
+    }
+
+    @Override
+    public boolean isUserHasVideo(Long videoID, Long userID) {
+        return false;
     }
 }

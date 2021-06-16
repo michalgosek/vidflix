@@ -1,6 +1,7 @@
 package com.example.videly.video;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "categories")
+@NoArgsConstructor
 public class VideoCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "naive")
@@ -21,6 +23,7 @@ public class VideoCategory {
 
     @ManyToMany(mappedBy = "categories")
     private Set<Video> videos;
+
 
     public VideoCategory(Long id, String name) {
         this.id = id;

@@ -63,12 +63,11 @@ public class ApplicationUserService implements UserDetailsService {
         throw new IllegalStateException(USER_EMAIL_FOUND);
     }
 
-    public boolean verifyUserAccountState(String username) {
-        final ApplicationUser userDetails = (ApplicationUser) loadUserByUsername(username);
-        return userDetails.isAccountNonExpired()
-                && userDetails.isAccountNonLocked()
-                && userDetails.isCredentialsNonExpired()
-                && userDetails.isEnabled()
-                && userDetails.hasUserRoleAssigned();
+    public boolean verifyUserAccountState(ApplicationUser applicationUser) {
+        return applicationUser.isAccountNonExpired()
+                && applicationUser.isAccountNonLocked()
+                && applicationUser.isCredentialsNonExpired()
+                && applicationUser.isEnabled()
+                && applicationUser.hasUserRoleAssigned();
     }
 }
